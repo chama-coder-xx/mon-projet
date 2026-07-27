@@ -1,7 +1,8 @@
 <?php
 
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Http;
+use App\Http\Controllers\Api\AttestationController;
+use App\Http\Controllers\Api\AuthController;
+use App\Http\Controllers\Api\DashboardController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/test', function () {
@@ -10,70 +11,11 @@ Route::get('/test', function () {
     ]);
 });
 
-Route::post('/compte-fiscal/login', function (Request $request) {
-    try {
-        $response = Http::withoutVerifying()->send('POST', env('DARIBATI_BASE_URL') . '/providers/login', [
-            'json' => [
-                'username' => $request->input('username'),
-                'password' => $request->input('password'),
-            ],
-        ]);
+Route::post('/compte-fiscal/login', [AuthController::class, 'login']);
+Route::post('/compte-fiscal/otp', [AuthController::class, 'otp']);
+Route::get('/compte-fiscal/dashboard', [DashboardController::class, 'show']);
 
-        return response()->json(
-            $response->json(),
-            $response->status()
-        );
-
-    } catch (\Exception $e) {
-        return response()->json([
-            'error' => true,
-            'message' => $e->getMessage()
-        ], 500);
-    }
-});
-
-Route::post('/compte-fiscal/otp', function (Request $request) {
-    try {
-        $url = env('DARIBATI_BASE_URL') . '/providers/CheckAccessCode';
-
-        $response = Http::withoutVerifying()->send('POST', $url, [
-            'query' => [
-                'idFiscal' => $request->input('idFiscal'),
-                'username' => $request->input('username'),
-                'code' => $request->input('code'),
-            ],
-        ]);
-
-        return response()->json(
-            $response->json(),
-            $response->status()
-        );
-
-    } catch (\Exception $e) {
-        return response()->json([
-            'error' => true,
-            'message' => $e->getMessage()
-        ], 500);
-    }
-});
-Route::get('/compte-fiscal/dashboard', function (Request $request) {
-    try {
-        $response = Http::withoutVerifying()->get(
-            env('DARIBATI_BASE_URL') . '/providers/dashboard',
-            [
-                'idFiscal' => $request->query('idFiscal')
-            ]
-        );
-
-        return response()->json(
-            $response->json(),
-            $response->status()
-        );
-
-    } catch (\Exception $e) {
-        return response()->json([
-            'error' => true,
-            'message' => $e->getMessage()
-        ], 500);
-    }
+Route::prefix('attestations')->controller(AttestationController::class)->group(function () {
+    Route::get('/tp/verify', 'verifyTp');
+    Route::get('/tp/download', 'downloadTp');
 });

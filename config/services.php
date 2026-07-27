@@ -35,4 +35,13 @@ return [
         ],
     ],
 
+    'daribati' => [
+        'compte_fiscal' => env('DARIBATI_BASE_URL'),
+        'attestation' => env('ATTESTATION_URL'),
+        'adhesion' => env('ADHESION_URL'),
+        'cpu' => env('CPU_URL'),
+        'vignette' => env('VIGNETTE_URL'),
+        'external' => env('EXTERNAL_URL'),
+    ],
+
 ];
