@@ -15,4 +15,9 @@ class DashboardService
     {
         return $this->client->get('/providers/dashboard', ['idFiscal' => $idFiscal], $headers);
     }
+
+    public function getInitPaymentMultiple(string $idFiscal, array $headers)
+    {
+        return $this->client->get('/providers/initPaiementMultiple', ['idFiscal' => $idFiscal], $headers);
+    }
 }

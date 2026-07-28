@@ -20,4 +20,13 @@ class DashboardController extends Controller
 
         return response()->json($response->json(), $response->status());
     }
+
+    public function initPaymentMultiple(Request $request)
+    {
+        $data = $request->validate(['idFiscal' => 'required']);
+
+        $response = $this->service->getInitPaymentMultiple($data['idFiscal'], $this->authHeaders($request));
+
+        return response()->json($response->json(), $response->status());
+    }
 }
